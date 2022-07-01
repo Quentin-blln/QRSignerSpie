@@ -13,6 +13,9 @@ import { NewMissionView } from './views/newMission';
 import { EditMissionView } from './views/EditMission';
 import { DoneMissionView } from './views/DoneMission';
 import { OfflineDatasView } from './views/OfflineDatas';
+import { SignaturesHistoryView } from './views/SignaturesHistory';
+import { SignatureDetailsView } from './views/SignatureDetails';
+import { AllUsersView } from './views/AllUsers';
 
 const Stack = createStackNavigator();
 
@@ -23,7 +26,7 @@ export default function App() {
         <Stack.Screen
             name="Login"
             component={LoginView}
-            options={{ title: "QRScanner" }}
+            options={{ title: "" }}
           />
           <Stack.Screen
             name="Missions"
@@ -74,6 +77,21 @@ export default function App() {
             name="OfflineDatas"
             component={OfflineDatasView}
             options={{ title: "Offline Datas" }}
+          />
+          <Stack.Screen
+            name="SignaturesHistory"
+            component={SignaturesHistoryView}
+            options={{ title: "Signatures History" }}
+          />
+          <Stack.Screen
+            name="SignatureDetails"
+            component={SignatureDetailsView}
+            options={{ title: "Signature Details" }}
+          />
+          <Stack.Screen
+            name="AllUsers"
+            component={AllUsersView}
+            options={{ title: "All Users" }}
           />
       </Stack.Navigator>
     </NavigationContainer>

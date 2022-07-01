@@ -34,7 +34,8 @@ const styles = StyleSheet.create({
     fontWeight: "400",
   },
   title: {
-    textAlign: 'center'
+    textAlign: 'center',
+    marginBottom: 10,
   },
   centeredView: {
     flex: 1,
@@ -90,6 +91,32 @@ const styles = StyleSheet.create({
     flexDirection: "row" ,
     marginLeft: 20, 
     justifyContent: 'space-evenly'
+  },
+  textMargin:{
+    marginLeft: 20,
+    marginRight: 20
+  },
+  marginTop:{
+    marginTop: 20
+  },
+  border:{
+    borderWidth: 1,
+    borderColor: "#000",
+    borderRadius: 10
+  },
+  negativeMarginRight:{
+    marginRight: -80
+  },
+  negativeMarginLeft:{
+    marginLeft: -80
+  },
+  TextHorizontalAlign:{
+    flexDirection: "row" ,
+    marginLeft: 20, 
+    justifyContent: 'space-between'
+  },
+  bold:{
+    fontWeight: "bold"
   }
 });
 

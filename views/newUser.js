@@ -18,6 +18,7 @@ export function NewUserView({ route, navigation }) {
     const [emailExist, setEmailExist] = useState(false)
     const [newUserFirstName, setNewUserFirstName] = useState('')
     const [newUserLastName, setNewUserLastName] = useState('')
+    const [newUserPhone, setNewUserPhone] = useState('')
     const [newUserPassword, setNewUserPassword] = useState('')
     const [newUserPasswordValidation, setNewUserPasswordValidation] = useState('')
 
@@ -27,7 +28,8 @@ export function NewUserView({ route, navigation }) {
             email: newUserEmail,
             password: newUserPassword,
             firstname: newUserFirstName,
-            lastname: newUserLastName
+            lastname: newUserLastName,
+            phone: newUserPhone
         },{
             headers: {
                 'Content-Type': 'application/json',
@@ -83,20 +85,26 @@ export function NewUserView({ route, navigation }) {
         }
     }
 
+    //Check if all fields are filled and if passwords match before sending the request
     const handleUserInfosCheck = () =>{
         if(newUserFirstName){
             if(newUserLastName){
-                if(newUserPassword){
-                    if(newUserPassword===newUserPasswordValidation){
-                        setValidationModalVisible(true)
+                if(newUserPhone){
+                    if(newUserPassword){
+                        if(newUserPassword===newUserPasswordValidation){
+                            setValidationModalVisible(true)
+                        }
+                        else{
+                            console.log(newUserPassword, newUserPasswordValidation)
+                            alert('Your password validation is not the same as your password.')
+                        }
                     }
                     else{
-                        console.log(newUserPassword, newUserPasswordValidation)
-                        alert('Your password validation is not the same as your password.')
+                        alert('Please enter a password.')
                     }
                 }
                 else{
-                    alert('Please enter a password.')
+                    alert('Please enter a phone number.')
                 }
             }
             else{
@@ -146,6 +154,14 @@ export function NewUserView({ route, navigation }) {
                         onChangeText={(text) => setNewUserLastName(text)}
                         error={!!newUserLastName.error}
                         errorText={newUserLastName.error}
+                    />
+                    <TextInput
+                        label="Phone number"
+                        returnKeyType="done"
+                        value={newUserPhone}
+                        onChangeText={(text) => setNewUserPhone(text)}
+                        error={!!newUserPhone.error}
+                        errorText={newUserPhone.error}
                     />
                     <TextInput
                         label="Password"

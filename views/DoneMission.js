@@ -20,11 +20,13 @@ export function DoneMissionView({ route, navigation }) {
 
     const [user, setUser] = useState(route.params.user);
     const [mission, setMission] = useState(route.params.mission)
-    const [supervisor, setSupervisor] = useState()
-    const [contributor, setContributor] = useState()
+    const [missionSupervisors, setMissionSupervisors] = useState([])
+    const [missionContributors, setMissionContributors] = useState([])
+    const [missionSignatures, setMissionSignatures] = useState([])
     const [deleteMissionModalVisible, setDeleteMissionModalVisible] = useState(false)
 
 
+    //Set header buttons
     React.useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => <Button color="#ff0000" title="Delete" onPress={() => { setDeleteMissionModalVisible(!deleteMissionModalVisible) }} />
@@ -32,30 +34,35 @@ export function DoneMissionView({ route, navigation }) {
     }, [navigation]);
 
     useEffect(() => {
-        //Get supervisor that validated this mission
-        if (mission.doneSupervisor) {
-            axios.get('http://192.168.1.62:3000/user', {
-                headers: { 'Content-Type': 'application/json' },
-                params: { email: user.email, userID: mission.doneSupervisor }
+        //Get every supervisors for this mission
+        axios.get('http://192.168.1.62:3000/missionsupervisors', {
+            headers: { 'Content-Type': 'application/json' },
+            params: { userID: user.id, missionID: mission.id }
+        })
+            .then(resp => {
+                // console.log("Mission supervisors: ", resp.data.users)
+                setMissionSupervisors(resp.data.users)
             })
-                .then(resp => {
-                    console.log("Mission supervisor: ", resp.data.user)
-                    setSupervisor(resp.data.user)
-                })
-                .catch(err => console.log(err))
-        }
-        if (mission.doneContributor) {
-            //Get contributor that validated this mission
-            axios.get('http://192.168.1.62:3000/user', {
-                headers: { 'Content-Type': 'application/json' },
-                params: { email: user.email, userID: mission.doneContributor }
+            .catch(err => console.log(err))
+
+        //Get every contributors for this mission
+        axios.get('http://192.168.1.62:3000/missioncontributors', {
+            headers: { 'Content-Type': 'application/json' },
+            params: { userID: user.id, missionID: mission.id }
+        })
+            .then(resp => {
+                // console.log("Mission contributors: ", resp.data.users)
+                setMissionContributors(resp.data.users)
             })
-                .then(resp => {
-                    console.log("Mission contributor: ", resp.data.user)
-                    setContributor(resp.data.user)
-                })
-                .catch(err => console.log(err))
-        }
+            .catch(err => console.log(err))
+
+        //Get every signatures for this mission
+        axios.get('http://192.168.1.62:3000/signatures', {
+            headers: { 'Content-Type': 'application/json' },
+            params: { userID: user.id, missionID: mission.id }
+        }).then(resp => {
+            setMissionSignatures(resp.data.signatures)
+        }).catch(err => console.log(err))
     }, [mission])
 
     const handleDeleteMission = () => {
@@ -94,28 +101,77 @@ export function DoneMissionView({ route, navigation }) {
 
 
     return (
-        <View>
-            <Title style={styles.title}>Mission: {mission.name}</Title>
-            <Subheading style={styles.title}>Company: {mission.company_name}</Subheading>
-            <Text>Adress: {mission.company_location}</Text>
-            <Text>Contact: {mission.company_contact}</Text>
-            <Text>Date: {new Date(mission.date).toDateString()}</Text>
-            <Text>Description: {mission.description}</Text>
-            <Text></Text>
-            <Text></Text>
-            <Text>Supervisor that validated this mission:</Text>
-            {supervisor &&
-                <List.Item title={supervisor.lastname + ' ' + supervisor.firstname} description={supervisor.email} />
-            }
-            <Text></Text>
-            <Text>Contributor that validated this mission:</Text>
-            {contributor &&
-                <List.Item title={contributor.lastname + ' ' + contributor.firstname} description={contributor.email} />
-            }
-            <Text></Text>
-            <Text>Comment after validation: </Text>
-            <Text></Text>
-            <Subheading>{mission.doneComment && mission.doneComment}</Subheading>
+        <ScrollView style={styles.container}>
+            <View style={[styles.header, styles.border, styles.textMargin, styles.marginTop]}>
+                <Text></Text>
+                <Title style={[styles.title, styles.bold]}>{mission.name}</Title>
+                <View style={[styles.TextHorizontalAlign, styles.marginTop]}>
+                    <Subheading style={styles.bold}>Company:</Subheading>
+                    <Subheading style={styles.textMargin}>{mission.company_name}</Subheading>
+                </View>
+                <View style={[styles.TextHorizontalAlign, styles.marginTop]}>
+                    <Subheading style={styles.bold}>Address:</Subheading>
+                    <Subheading style={[styles.textMargin, {maxWidth:200}]}>{mission.company_location}</Subheading>
+                </View>
+                <View style={[styles.TextHorizontalAlign, styles.marginTop]}>
+                    <Subheading style={styles.bold}>Contact:</Subheading>
+                    <Subheading style={styles.textMargin}>{mission.company_contact}</Subheading>
+                </View>
+                <View style={[styles.TextHorizontalAlign, styles.marginTop]}>
+                    <Subheading style={styles.bold}>Date:</Subheading>
+                    <Subheading style={styles.textMargin}>{new Date(mission.date).toLocaleString()}</Subheading>
+                </View>
+                <View style={[styles.TextHorizontalAlign, styles.marginTop]}>
+                    <Subheading style={styles.bold}>Description:</Subheading>
+                    <Text style={[styles.textMargin, {maxWidth:160}]}>{mission.description}</Text>
+                </View>
+
+                <Text></Text>
+                <View style={[styles.border, styles.textMargin]}>
+                    <Subheading style={[styles.title, styles.bold]}>Supervisors:</Subheading>
+                    {missionSupervisors.map((usr, index) =>
+                    <List.Item key={index} title={usr.lastname + ' ' + usr.firstname} description={usr.email} />
+                    )}
+                </View>
+
+                <Text></Text>
+
+                <View style={[styles.border, styles.textMargin]}>
+                    <Subheading style={[styles.title, styles.bold]}>Contributors:</Subheading>
+                    {missionContributors.map((usr, index) =>
+                    <List.Item key={index} title={usr.lastname + ' ' + usr.firstname} description={usr.email} />
+                    )}
+                </View>
+
+                <Text></Text>
+                {missionSignatures.length > 0 &&
+                    <View style={[styles.textMargin,{ borderWidth: 1, borderColor: "#008000", borderRadius:10, marginBottom:30}]}>
+                        <Subheading style={[styles.title, styles.bold]}>Signatures done during this mission:</Subheading>
+                        <Text></Text>
+                        {missionSignatures.map((signature, index) =>
+                            <View key={index} >
+                                <Text>Signature n°{index+1}:</Text>
+                                {signature.supervisor && 
+                                    <View style={[styles.TextHorizontalAlign, {marginTop:5}]}>
+                                        <Text style={styles.textMargin}>Supervisor:</Text>
+                                        <Text style={styles.textMargin}>{signature.supervisor.lastname + ' ' + signature.supervisor.firstname}</Text>
+                                    </View>}
+                                {signature.contributor && 
+                                <View style={[styles.TextHorizontalAlign, {marginTop:5}]}>
+                                    <Text style={styles.textMargin}>Contributor:</Text>
+                                    <Text style={styles.textMargin}>{signature.contributor.lastname + ' ' + signature.contributor.firstname}</Text>
+                                </View>}
+                                <View style={[styles.TextHorizontalAlign, {marginTop:5}]}>
+                                    <Text style={styles.textMargin}>Comment:</Text>
+                                    <Text style={[styles.textMargin,{maxWidth:150}]}>{signature.signature.comment}</Text>
+                                </View>
+                                <Text></Text>
+                            </View>
+                        
+                        )}
+                    </View>
+                }
+            </View>
 
             {/* Delete Mission Modal */}
             <Modal
@@ -151,6 +207,6 @@ export function DoneMissionView({ route, navigation }) {
                     </View>
                 </View>
             </Modal>
-        </View>
+        </ScrollView>
     );
 }

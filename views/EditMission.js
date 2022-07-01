@@ -45,9 +45,10 @@ export function EditMissionView({ route, navigation }) {
 
     const [allUsers, setAllUsers] = useState([])
 
+    //Set header buttons
     React.useLayoutEffect(() => {
         navigation.setOptions({
-            headerRight: () => <Button color="#ff0000" title="Delete" onPress={()=>{setDeleteMissionModalVisible(!deleteMissionModalVisible)}}/>
+            headerRight: () => <Button color="#ff0000" title="Delete" onPress={() => { setDeleteMissionModalVisible(!deleteMissionModalVisible) }} />
         });
     }, [navigation]);
 
@@ -154,7 +155,7 @@ export function EditMissionView({ route, navigation }) {
                                     contributors: newMissionContributorsIds,
                                     oldSupervisors: missionOldSupervisors,
                                     oldContributors: missionOldContributors
-                                },{
+                                }, {
                                     headers: {
                                         'Content-Type': 'application/json',
                                     },
@@ -198,7 +199,7 @@ export function EditMissionView({ route, navigation }) {
 
     const handleDeleteMission = () => {
         if (user.isAdmin) {
-            axios.post(`http://192.168.1.62:3000/deletemission`, {missionID: mission.id, email: user.email},{
+            axios.post(`http://192.168.1.62:3000/deletemission`, { missionID: mission.id, email: user.email }, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -307,7 +308,7 @@ export function EditMissionView({ route, navigation }) {
             />
 
             <Text></Text>
-            <Button title="Edit" onPress={() => { handleEditMission() }} />
+            <Button title="Confirm" onPress={() => { handleEditMission() }} />
             <Text></Text>
             <Text></Text>
             <Text></Text>

@@ -25,60 +25,64 @@ export function DoneMissionsView({ route, navigation }) {
 
     const isFocused = useIsFocused();
 
-    useEffect(()=>{
-        if(user.isAdmin){
-            axios.get('http://192.168.1.62:3000/alldonemissions',{
-                headers:{'Content-Type': 'application/json'},
-                params:{userID: user.id}
+    //Get all done missions
+    useEffect(() => {
+        if (user.isAdmin) {
+            axios.get('http://192.168.1.62:3000/alldonemissions', {
+                headers: { 'Content-Type': 'application/json' },
+                params: { userID: user.id }
             })
-            .then(resp=>{
-                console.log(resp.data)
-                setMissions(resp.data.missions)
-            })
-            .catch(err=>console.log(err))
+                .then(resp => {
+                    console.log(resp.data)
+                    setMissions(resp.data.missions)
+                })
+                .catch(err => console.log(err))
         }
-    },[route, isFocused])
+    }, [route, isFocused])
 
-
-      React.useLayoutEffect(() => {
+    //Set header buttons
+    React.useLayoutEffect(() => {
         navigation.setOptions({
             headerBackTitle: "Missions",
             headerRight: () => <ProfileIcon user={user} />
         });
-      }, [navigation]);
+    }, [navigation]);
 
-  return (
-    // <Background>
+    return (
+        // <Background>
         <ScrollView>
-        {user.isAdmin&&
-        <Text style={{textAlign:"center"}}>Your account has admin rights. Here are all done missions.</Text>
-        }
-            
+            {user.isAdmin &&
+                <Text style={{ textAlign: "center" }}>Your account has admin rights. Here are all done missions.</Text>
+            }
 
-        {missions.map((mission, index) =>
-            <ListItem.Swipeable
-            onPress={() => navigation.navigate('DoneMission', {user: user, mission:mission})}
-            bottomDivider
-            key={index} 
-            // rightContent={
-            //     <Button
-            //     title="Delete"
-            //     onPress={() => deleteLink(link)}
-            //     />
-            //     }
-            >
-            <ListItem.Content>
-                <ListItem.Title>
-                {mission.name}
-                </ListItem.Title>
-                <ListItem.Subtitle>
-                {mission.company_name}
-                </ListItem.Subtitle>
-                </ListItem.Content>
-                <ListItem.Chevron />
-            </ListItem.Swipeable>
-        )}
+
+            {missions.map((mission, index) =>
+                <ListItem.Swipeable
+                    onPress={() => navigation.navigate('DoneMission', { user: user, mission: mission })}
+                    bottomDivider
+                    key={index}
+                // rightContent={
+                //     <Button
+                //     title="Delete"
+                //     onPress={() => deleteLink(link)}
+                //     />
+                //     }
+                >
+                    <ListItem.Content>
+                        <ListItem.Title>
+                            {mission.name}
+                        </ListItem.Title>
+                        <ListItem.Subtitle>
+                            {mission.company_name}
+                        </ListItem.Subtitle>
+                        <ListItem.Subtitle>
+                            {new Date(mission.date).toLocaleString()}
+                        </ListItem.Subtitle>
+                    </ListItem.Content>
+                    <ListItem.Chevron />
+                </ListItem.Swipeable>
+            )}
         </ScrollView>
-    // </Background>
-  );
+        // </Background>
+    );
 }

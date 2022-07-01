@@ -28,6 +28,7 @@ export function OfflineDatasView({ route, navigation }) {
 
     const isFocused = useIsFocused();
 
+    //Set header buttons
     React.useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => <Button color="#ff0000" title="Delete datas" onPress={()=>{
@@ -47,6 +48,7 @@ export function OfflineDatasView({ route, navigation }) {
         });
     }, [navigation]);
 
+    //Get saved datas
     useEffect(async()=>{
         let resultD = await SecureStore.getItemAsync('QRDisplaySaved');
         if(resultD){

@@ -23,6 +23,11 @@ export function LoginView({ navigation }) {
   const [forgotPasswordModalVisible, setForgotPasswordModalVisible] = useState(false)
   const [forgottenPasswordEmail, setForgottenPasswordEmail] = useState('')
 
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({headerShown: false});
+  }, [navigation]);
+  
   const onLoggedIn = (token, user) => {
     axios.get(`http://192.168.1.62:3000/private`, {
       headers: {
@@ -90,11 +95,6 @@ export function LoginView({ navigation }) {
       });
   };
 
-  const getMessage = () => {
-    const status = isError ? `Error: ` : `Success: `;
-    return status + message;
-  }
-
   const handleForgottenPassword = () => {
     axios.post(`http://192.168.1.62:3000/forgotpassword`, { email: forgottenPasswordEmail },{
       headers: {
@@ -123,44 +123,6 @@ export function LoginView({ navigation }) {
         console.log(err);
       });
   }
-
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
-
-  // // useEffect(() => {
-  // //   // If there is a user logged in, go to the Projects page.
-  // //   if (user != null) {
-  // //     console.log('USER CONNECTED: ', JSON.stringify( user, null, 2))
-  // //     navigation.navigate("Tasks");
-  // //   }
-  // // }, [user]);
-
-  // // The onPressSignIn method calls AuthProvider.signIn with the
-  // // email/password in state.
-  // const onPressSignIn = async () => {
-  //   console.log("Trying sign in with user: " + email);
-  //   try {
-  //     await signIn(email, password);
-  //   } catch (error) {
-  //     const errorMessage = `Failed to sign in: ${error.message}`;
-  //     console.error(errorMessage);
-  //     Alert.alert(errorMessage);
-  //   }
-  // };
-
-  // // The onPressSignUp method calls AuthProvider.signUp with the
-  // // email/password in state and then signs in.
-  // const onPressSignUp = async () => {
-  //   console.log("Trying Sign Up with user: " + email);
-  //   try {
-  //     await signUp(email, password);
-  //     signIn(email, password);
-  //   } catch (error) {
-  //     const errorMessage = `Failed to sign up: ${error.message}`;
-  //     console.error(errorMessage);
-  //     Alert.alert(errorMessage);
-  //   }
-  // };
 
   return (
     <Background>

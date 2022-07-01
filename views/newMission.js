@@ -85,6 +85,7 @@ export function NewMissionView({ route, navigation }) {
         setNewMissionSupervisors(tempL)
     },[newMissionContributorsIds])
 
+    //Check if all fields are filled before sending the request
     const handleCreateMission = () =>{
         if(newMissionName){
             if(newMissionDescription){

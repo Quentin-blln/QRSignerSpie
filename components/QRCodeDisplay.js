@@ -8,8 +8,6 @@ export default function QRCodeDisplay(props) {
   let mission = props.mission
   let signObject = `{"user":${user.id},"mission":${mission.id},"name":"${user.lastname + ' ' + user.firstname}"}`
   let encrypted = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(signObject))
-  console.log(encrypted)
-  console.log('user: ',mission)
     return(
         <QRCode 
         size={200}
